@@ -14,9 +14,8 @@ it 'When I visit show page, I see Applicant name, full address, description,
 names of all pets application is for(pet names link to their show page, Applications status' do
 
   shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
-  dog = Pet.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby", shelter_id: shelter.id)
-  stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I like cat toes", pets: dog.id, status: "In Progress")
-require 'pry'; binding.pry
+  dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
+  stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I like cat toes", pets: "Abby", status: "In Progress")
   visit("/applications/#{stephen.id}")
 
   expect(page).to have_content(stephen.name)
@@ -27,6 +26,6 @@ require 'pry'; binding.pry
   expect(page).to have_content(stephen.description)
   expect(page).to have_content(stephen.pets)
   expect(page).to have_content(stephen.status)
-
+save_and_open_page
   end
 end
