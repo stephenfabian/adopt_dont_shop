@@ -10,8 +10,15 @@ class ApplicationController < ActionController::Base
   end
 
   def create
-    @application = Application.create(app_params)
-    redirect_to "/applications/#{@application.id}"
+    @application = Application.new(app_params)
+    # require 'pry'; binding.pry
+      if @application.save
+      # if @application.valid?
+        redirect_to "/applications/#{@application.id}"
+      else 
+        redirect_to "/applications/new"
+        flash[:alert] = "Error: #{error_message(@application.errors)}"
+      end
   end
   private
 
