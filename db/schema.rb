@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_02_043611) do
+ActiveRecord::Schema.define(version: 2022_09_02_193511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 2022_09_02_043611) do
     t.index ["pet_id"], name: "index_application_pets_on_pet_id"
   end
 
-  create_table "applications", id: :bigint, default: -> { "nextval('applicantions_id_seq'::regclass)" }, force: :cascade do |t|
+  create_table "applications", force: :cascade do |t|
     t.string "name"
     t.string "street_address"
     t.string "city"
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2022_09_02_043611) do
     t.integer "zip_code"
     t.string "description"
     t.string "pets"
-    t.string "status"
+    t.string "status", default: "In Progress"
   end
 
   create_table "pet_applications", force: :cascade do |t|
