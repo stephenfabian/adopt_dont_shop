@@ -10,4 +10,4 @@ Pet.destroy_all
 Shelter.destroy_all
 
 shelter10 = Shelter.create!(foster_program: TRUE, name: "John's Shelter", city: "Royal Oak", rank: 800)
-dog10 = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Rabbit")
+dog10 = shelter10.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Rabbit")
