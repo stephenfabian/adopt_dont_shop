@@ -7,6 +7,14 @@ class ApplicationController < ActionController::Base
 
   def show
     @application = Application.find(params[:id])
+
+    #stephen add
+    @pet_name_search_results = []
+    # require 'pry'; binding.pry
+    if params[:pet_name_search].present?
+      @pet_name_search_results = Pet.find_by name: params[:pet_name_search]
+      # require 'pry'; binding.pry
+    end
   end
 
   def create
