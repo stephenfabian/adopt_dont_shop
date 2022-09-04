@@ -29,6 +29,6 @@
    <p><%= form_with url: "/applications/#{@application.id}", method: :patch, local: true do |form| %></p>
      Why am I a good fit? <%= form.label :description %>
      <%= form.text_field :description %>
-     <%= form.submit 'Submit description' %>
+     <%= form.submit 'Submit application' %>
      <% end %>
      <% end %>

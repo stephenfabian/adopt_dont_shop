@@ -97,12 +97,29 @@ RSpec.describe 'Application Show Feature' do
       click_button("Adopt this Pet")
 
       fill_in "description", with: "I like dogs"
-      click_on("Submit description")
+      click_on("Submit application")
 
       expect(current_path).to eq("/applications/#{stephen.id}")
       expect(page).to have_content("I like dogs")
       expect(page).to have_content("Pending")
       expect(page).to_not have_content("Search")
     end
+
+      # As a visitor
+      # When I visit an application's show page
+      # And I have not added any pets to the application
+      # Then I do not see a section to submit my application
+
+      it 'cant submit an application without pet' do
+        shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
+        dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
+        dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
+        stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401")
+
+        visit "/applications/#{stephen.id}"
+
+        expect(page).to_not have_content("Submit application")
+        expect(stephen.pets).to eq([])
+      end
 
 end
