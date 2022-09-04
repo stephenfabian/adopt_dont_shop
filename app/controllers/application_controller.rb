@@ -7,19 +7,22 @@ class ApplicationController < ActionController::Base
 
   def show
     @application = Application.find(params[:id])
-
-    #stephen add
-    @pet_name_search_results = []
-    # require 'pry'; binding.pry
-    if params[:pet_name_search].present?
-      @pet_name_search_results = Pet.find_by name: params[:pet_name_search]
-      # require 'pry'; binding.pry
+    if params[:search].present?
+      @pet_name_search_results = Pet.find_by(name: params[:search])
     end
   end
+  
+  def update
+  #  @pet_names = Pet.search(params[:search])
+   @pet_names = Pet.find_by(name: params[:search])
+   @application = Application.find(params[:id])
+  #  require 'pry'; binding.pry
+   @application_pet = ApplicationPet.create!(pet: @pet_names, application: @application)
+   redirect_to "/applications/#{@application.id}"
+ end
 
   def create
     @application = Application.new(app_params)
-    # require 'pry'; binding.pry
       if @application.save
       # if @application.valid?
         redirect_to "/applications/#{@application.id}"
@@ -28,6 +31,8 @@ class ApplicationController < ActionController::Base
         flash[:alert] = "Error: #{error_message(@application.errors)}"
       end
   end
+
+
   private
 
   def app_params
