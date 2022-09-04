@@ -12,14 +12,23 @@
 
 <p>Status: <%= @application.status %></p>
 
-<h3> Search for a Pet to add to this Application </h3>
-<%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
-  <%= form.label :search %>
-  <%= form.text_field :search, params: :search %>
-  <%= form.submit 'Submit' %>
-<% end %>
+  <% if @application.status == 'In Progress' %>
+    <h3> Search for a Pet to add to this Application </h3>
+    <%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
+    <%= form.label :search %>
+    <%= form.text_field :search, params: :search %>
+    <%= form.submit 'Submit' %>
+      <% end  %>
+    <% end %>
 
 <% if @pet_name_search_results.present? %>
    <p><%=@pet_name_search_results.name%> <%= button_to "Adopt this Pet", "/applications/#{@application.id}", method: :patch, params: {search: @pet_name_search_results.name} %></p>
    <%end%>
- 
+
+   <% if @application.pets.present? %>
+   <p><%= form_with url: "/applications/#{@application.id}", method: :patch, local: true do |form| %></p>
+     Why am I a good fit? <%= form.label :description %>
+     <%= form.text_field :description %>
+     <%= form.submit 'Submit description' %>
+     <% end %>
+     <% end %>
