@@ -6,18 +6,20 @@
 <p>State: <%= @application.state %></p>
 <p>Zip: <%= @application.zip_code %></p>
 <p>Description: <%= @application.description %></p>
-<p>Pets: <%= @application.pets.each {|app_pet| app_pet.name }  %></p>
+<p>Pets: <% @application.pets.each do |app_pet| %>
+  <%= app_pet.name %>
+<%end%>
 
 <p>Status: <%= @application.status %></p>
 
 <h3> Search for a Pet to add to this Application </h3>
-<%= form_with url: "/applications/#{@application.id}?pet_name_search=", method: :get, local: true do |form| %>
-  <%= form.label :pet_name_search %>
-  <%= form.text_field :pet_name_search %>
+<%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
+  <%= form.label :search %>
+  <%= form.text_field :search, params: :search %>
   <%= form.submit 'Submit' %>
 <% end %>
 
 <% if @pet_name_search_results.present? %>
-   <%= @pet_name_search_results.name %>
+   <p><%=@pet_name_search_results.name%> <%= button_to "Adopt this Pet", "/applications/#{@application.id}", method: :patch, params: {search: @pet_name_search_results.name} %></p>
    <%end%>
  

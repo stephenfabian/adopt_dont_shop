@@ -29,16 +29,46 @@ RSpec.describe 'Application Show Feature' do
       shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
       dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
       dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
-      dog3 = shelter.pets.create!(adoptable: TRUE, age: 300, breed: "Gigantic-dog", name: "Roger")
-      stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I like cat toes", status: "In Progress")
+      stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I'm awesome", status: "In Progress")
 
       visit("/applications/#{stephen.id}")
       expect(page).to have_content("Search for a Pet to add to this Application")
-      save_and_open_page
-      fill_in "Pet name search", with: "Roger"
+
+      fill_in "Search", with: "Roger"
       click_on("Submit")
 
       expect(current_path).to eq("/applications/#{stephen.id}")
       expect(page).to have_content("Roger")
   end
+
+
+
+# As a visitor
+# When I visit an application's show page
+# And I search for a Pet by name
+# And I see the names Pets that match my search
+# Then next to each Pet's name I see a button to "Adopt this Pet"
+# When I click one of these buttons
+# Then I am taken back to the application show page
+# And I see the Pet I want to adopt listed on this application
+
+    it 'Add a Pet to an Application' do
+      shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
+      dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
+      dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
+      stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I'm awesome", status: "In Progress")
+
+      
+      visit("/applications/#{stephen.id}")
+      fill_in "Search", with: "Roger"
+      click_on("Submit")
+
+      expect(current_path).to eq("/applications/#{stephen.id}")
+      expect(page).to have_content("Roger")
+      expect(page).to have_button("Adopt this Pet")
+      click_button("Adopt this Pet")
+
+      expect(current_path).to eq("/applications/#{stephen.id}")
+      expect(page).to have_content("Roger")
+    end
 end
