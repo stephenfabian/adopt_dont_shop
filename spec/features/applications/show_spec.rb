@@ -19,7 +19,6 @@ RSpec.describe 'Application Show Feature' do
       expect(page).to have_content(stephen.state)
       expect(page).to have_content(stephen.zip_code)
       expect(page).to have_content(stephen.description)
-      save_and_open_page
       expect(page).to have_content("Abby")
       expect(page).to have_content(stephen.status)
     end
@@ -58,7 +57,7 @@ RSpec.describe 'Application Show Feature' do
       dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
       stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I'm awesome", status: "In Progress")
 
-      
+
       visit("/applications/#{stephen.id}")
       fill_in "Search", with: "Roger"
       click_on("Submit")
@@ -71,4 +70,56 @@ RSpec.describe 'Application Show Feature' do
       expect(current_path).to eq("/applications/#{stephen.id}")
       expect(page).to have_content("Roger")
     end
+
+    #submit an application
+    # As a visitor
+    # When I visit an application's show page
+    # And I have added one or more pets to the application
+    # Then I see a section to submit my application
+    # And in that section I see an input to enter why I would make a good owner for these pet(s)
+    # When I fill in that input
+    # And I click a button to submit this application
+    # Then I am taken back to the application's show page
+    # And I see an indicator that the application is "Pending"
+    # And I see all the pets that I want to adopt
+    # And I do not see a section to add more pets to this application
+
+    it 'can submit application with pet already in it, status changes from pending to in progress' do
+      shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
+      dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
+      dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
+      stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401")
+
+      visit "/applications/#{stephen.id}"
+
+      fill_in "Search", with: "Roger"
+      click_on("Submit")
+      click_button("Adopt this Pet")
+
+      fill_in "description", with: "I like dogs"
+      click_on("Submit application")
+
+      expect(current_path).to eq("/applications/#{stephen.id}")
+      expect(page).to have_content("I like dogs")
+      expect(page).to have_content("Pending")
+      expect(page).to_not have_content("Search")
+    end
+
+      # As a visitor
+      # When I visit an application's show page
+      # And I have not added any pets to the application
+      # Then I do not see a section to submit my application
+
+      it 'cant submit an application without pet' do
+        shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
+        dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
+        dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
+        stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401")
+
+        visit "/applications/#{stephen.id}"
+
+        expect(page).to_not have_content("Submit application")
+        expect(stephen.pets).to eq([])
+      end
+
 end
