@@ -8,17 +8,18 @@ class ApplicationController < ActionController::Base
   def show
     @application = Application.find(params[:id])
     if params[:search].present?
-      @pet_name_search_results = Pet.find_by(name: params[:search])
+      # @pet_name_search_results = Pet.find_by(name: params[:search])
+      @pet_name_search_results = Pet.search(params[:search])
     end
   end
 
   def update
-  #  @pet_names = Pet.search(params[:search])
       @application = Application.find(params[:id])
-  #  require 'pry'; binding.pry
     if params[:search]
-      @pet_names = Pet.find_by(name: params[:search])
-      @application_pet = ApplicationPet.create!(pet: @pet_names,  application: @application)
+      # @pet_names = Pet.find_by(name: params[:search])
+      @pet_names = Pet.search(params[:search])
+      # @application_pet = ApplicationPet.create!(pet: @pet_names,  application: @application)
+      @application.pets << @pet_names 
     elsif params[:description]
       @application.update(description: params[:description])
       @application.update(status: 'Pending')
