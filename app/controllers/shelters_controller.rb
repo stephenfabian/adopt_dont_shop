@@ -11,6 +11,7 @@ class SheltersController < ApplicationController
 
   def admin_index
     @shelters = Shelter.reverse_alphabetical
+    @applications = Application.find_by(status: "Pending")
   end
 
   def pets

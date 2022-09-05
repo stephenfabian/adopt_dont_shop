@@ -114,9 +114,33 @@ RSpec.describe 'the shelters index' do
   it 'lists all Shelters in the system listed in reverse alphabetical order by name' do
     visit "/admin/shelters"
 
-
-    save_and_open_page
     expect(@shelter_2.name).to appear_before(@shelter_3.name)
     expect(@shelter_3.name).to appear_before(@shelter_1.name)
+  end
+
+  describe 'Admin Index shelters with pending applications' do
+
+  # Shelters with Pending Applications
+  # As a visitor
+  # When I visit the admin shelter index ('/admin/shelters')
+  # Then I see a section for "Shelter's with Pending Applications"
+  # And in this section I see the name of every shelter that has a pending application
+
+    it 'I see the name of every shelter that has a pending application' do
+      shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
+      dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
+      dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
+      stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO",status: "Pending", zip_code: "80401")
+      andre = Application.create!(name: "Andre Pedro", street_address: "23445 miracle st", city: "boulder", state: "CO",status: "Pending", zip_code: "12347")
+      bill = Application.create!(name: "Bill Pedro", street_address: "25 miracle st", city: "bouldor", state: "CO",status: "In progress", zip_code: "12347")
+
+      ApplicationPet.create!(pet_id: dog.id, application_id: stephen.id)
+      ApplicationPet.create!(pet_id: dog2.id, application_id: andre.id)
+
+      visit "/admin/shelters"
+
+      expect(page).to have_content("Stephen Fabian")
+      expect(page).to have_content("Andre Pedro")
+    end
   end
 end
