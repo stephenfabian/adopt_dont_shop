@@ -39,7 +39,15 @@ class ApplicationController < ActionController::Base
       end
   end
 
+  def admin_show
+    @application = Application.find(params[:id])
+  end
 
+  def admin_update
+    @application = Application.find(params[:id])
+    @application.update(status: 'Approved') if params[:pet_id]
+    redirect_to "/admin/applications/#{@application.id}"
+  end
   private
 
   def app_params
