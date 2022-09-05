@@ -4,3 +4,10 @@
 <% @shelters.each do |shelter| %>
 <p><%= shelter.name %></p>
 <% end %>
+
+<h1>Shelters with pending applications</h1>
+
+<% @applications.pets.each do |pet| %>
+<% binding.pry %>
+<%= pet.shelter %>
+<% end %>
