@@ -122,4 +122,21 @@ RSpec.describe 'Application Show Feature' do
         expect(stephen.pets).to eq([])
       end
 
+    describe 'Partial Matches for Pet Names AND Case Insensitive Matches for Pet Names' do
+      it 'can find a pet with a partial AND case insensitive match from the search ' do
+        shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
+        dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
+        dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
+        dog3 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Rogerboy")
+        stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401")
+
+        visit "/applications/#{stephen.id}"
+
+        fill_in "Search", with: "rog"
+        click_on("Submit")
+
+        expect(page).to have_content("Roger")
+        expect(page).to have_content("Rogerboy")
+      end
+    end
 end

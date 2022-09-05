@@ -22,8 +22,11 @@
     <% end %>
 
 <% if @pet_name_search_results.present? %>
-   <p><%=@pet_name_search_results.name%> <%= button_to "Adopt this Pet", "/applications/#{@application.id}", method: :patch, params: {search: @pet_name_search_results.name} %></p>
+    <% @pet_name_search_results.each do |pet| %>
+      <p><%=pet.name%> <%= button_to "Adopt this Pet", "/applications/#{@application.id}", method: :patch, params: {search: pet.name} %></p>
+    <%end%>
    <%end%>
+   
 
    <% if @application.pets.present? %>
    <p><%= form_with url: "/applications/#{@application.id}", method: :patch, local: true do |form| %></p>
