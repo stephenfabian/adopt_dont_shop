@@ -45,13 +45,12 @@ class ApplicationController < ActionController::Base
 
   def admin_update
     @application = Application.find(params[:id])
-    if @application.status == "Approved"
-       @application.update(status: 'Approved') if params[:pet_id]
-       redirect_to "/admin/applications/#{@application.id}"
-     else @application.status == "Rejected"
-        @application.update(status: 'Rejected') if params[:pet_id]
-        redirect_to "/admin/applications/#{@application.id}"
+    if params[:pet_id] == "Approved"
+      @application.update(status: 'Approved')
+    elsif params[:pet_id] == "Rejected"
+        @application.update(status: 'Rejected')
     end
+    redirect_to "/admin/applications/#{@application.id}"
   end
   private
 
@@ -63,4 +62,3 @@ class ApplicationController < ActionController::Base
     errors.full_messages.join(', ')
   end
 end
-#<% if @application.pets.present? %>
