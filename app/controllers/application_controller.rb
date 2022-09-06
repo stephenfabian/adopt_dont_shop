@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
       # @pet_names = Pet.find_by(name: params[:search])
       @pet_names = Pet.search(params[:search])
       # @application_pet = ApplicationPet.create!(pet: @pet_names,  application: @application)
-      @application.pets << @pet_names 
+      @application.pets << @pet_names
     elsif params[:description]
       @application.update(description: params[:description])
       @application.update(status: 'Pending')
@@ -45,8 +45,13 @@ class ApplicationController < ActionController::Base
 
   def admin_update
     @application = Application.find(params[:id])
-    @application.update(status: 'Approved') if params[:pet_id]
-    redirect_to "/admin/applications/#{@application.id}"
+    if @application.status == "Approved"
+       @application.update(status: 'Approved') if params[:pet_id]
+       redirect_to "/admin/applications/#{@application.id}"
+     else @application.status == "Rejected"
+        @application.update(status: 'Rejected') if params[:pet_id]
+        redirect_to "/admin/applications/#{@application.id}"
+    end
   end
   private
 
