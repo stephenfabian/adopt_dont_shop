@@ -79,4 +79,38 @@ RSpec.describe 'Admin Shelters Show Page' do
       expect(page).to have_content("Rejected")
     end
   end
+    # Approved/Rejected Pets on one Application do not affect other Applications
+    # As a visitor
+    # When there are two applications in the system for the same pet
+    # When I visit the admin application show page for one of the applications
+    # And I approve or reject the pet for that application
+    # When I visit the other application's admin show page
+    # Then I do not see that the pet has been accepted or rejected for that application
+    # And instead I see buttons to approve or reject the pet for this specific application
+
+  describe 'Approved/Rejected Pets' do
+    it 'Approved/Rejected Pets on one Application do not affect other Applications' do
+      shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
+      shelter = Shelter.create!(foster_program: TRUE, name: "Karen's Shelter", city: "Madison Heights", rank: 80)
+      dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
+      dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
+      dog3 = shelter.pets.create!(adoptable: TRUE, age: 2, breed: "dalmation", name: "Bingo")
+      stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO",status: "Pending", zip_code: "80401")
+      andre = Application.create!(name: "Andre Pedro", street_address: "23445 miracle st", city: "boulder", state: "CO",status: "Pending", zip_code: "12347")
+      bill = Application.create!(name: "Bill Pedro", street_address: "25 miracle st", city: "bouldor", state: "CO",status: "In progress", zip_code: "12347")
+
+      ApplicationPet.create!(pet_id: dog.id, application_id: stephen.id)
+      ApplicationPet.create!(pet_id: dog.id, application_id: andre.id)
+
+      visit "/admin/applications/#{stephen.id}"
+
+      click_button("Approve Application")
+      expect(current_path).to eq("/admin/applications/#{stephen.id}")
+
+      visit "/admin/applications/#{andre.id}"
+
+      click_button("Reject Application")
+      expect(current_path).to eq("/admin/applications/#{andre.id}")
+    end
+  end
 end
