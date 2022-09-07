@@ -1,16 +1,17 @@
 <h1> Application Show Page </h1>
-
-<p>Name: <%= @application.name %></p>
-<p>Street address: <%= @application.street_address %></p>
-<p>City: <%= @application.city %></p>
-<p>State: <%= @application.state %></p>
-<p>Zip: <%= @application.zip_code %></p>
-<p>Description: <%= @application.description %></p>
-<p>Pets: <% @application.pets.each do |app_pet| %> 
+<div id= "application_start_<%= @application.id %>"
+  <p>Name: <%= @application.name %></p>
+  <p>Street address: <%= @application.street_address %></p>
+  <p>City: <%= @application.city %></p>
+  <p>State: <%= @application.state %></p>
+  <p>Zip: <%= @application.zip_code %></p>
+  <p>Description: <%= @application.description %></p>
+  <p>Pets: <% @application.pets.each do |app_pet| %>
   <p><%= link_to "#{app_pet.name}", "/pets/#{app_pet.id}", method: :get %></p>
 <%end%>
-
 <p>Status: <%= @application.status %></p>
+</div>
+
 
 <div id= "application_<%= @application.id %>">
   <% if @application.status == 'In Progress' %>
@@ -28,7 +29,7 @@
         <p><%=pet.name%> <%= button_to "Adopt this Pet", "/applications/#{@application.id}", method: :patch, params: {search: pet.name} %></p>
       <%end%>
    <%end%>
-   
+
   <% if @application.pets.present? %>
       <p><%= form_with url: "/applications/#{@application.id}", method: :patch, local: true do |form| %></p>
         Why am I a good fit? <%= form.label :description %>
