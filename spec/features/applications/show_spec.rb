@@ -156,6 +156,10 @@ RSpec.describe 'Application Show Feature' do
 
         expect(page).to have_content("Roger")
         expect(page).to have_content("Rogerboy")
+        expect(page).to_not have_content("Abby")
+
+        fill_in "Search", with: "ab"
+        expect(page).to_not have_content("Abby")
       end
     end
 end
