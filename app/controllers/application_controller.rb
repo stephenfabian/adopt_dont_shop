@@ -41,17 +41,18 @@ class ApplicationController < ActionController::Base
 
   def admin_show
     @application = Application.find(params[:id])
+    @application_pets = @application.application_pets
   end
 
-  def admin_update
-    @application = Application.find(params[:id])
-    if params[:pet_id] == "Approved"
-      @application.update(status: 'Approved')
-    elsif params[:pet_id] == "Rejected"
-        @application.update(status: 'Rejected')
-    end
-    redirect_to "/admin/applications/#{@application.id}"
-  end
+  # def admin_update
+  #   @application = Application.find(params[:id])
+  #   if params[:pet_id] == "Approved"
+  #     @application.update(status: 'Approved')
+  #   elsif params[:pet_id] == "Rejected"
+  #       @application.update(status: 'Rejected')
+  #   end
+  #   redirect_to "/admin/applications/#{@application.id}"
+  # end
   private
 
   def app_params
