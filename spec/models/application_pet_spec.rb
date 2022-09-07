@@ -4,7 +4,7 @@ RSpec.describe ApplicationPet do
   it {should belong_to(:pet)}
   it {should belong_to(:application)}
 
-  it 'pet_name' do
+  it 'pet_name - returns the admim applications pet name' do
 
     shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
     shelter = Shelter.create!(foster_program: TRUE, name: "Karen's Shelter", city: "Madison Heights", rank: 80)
@@ -22,7 +22,7 @@ RSpec.describe ApplicationPet do
     expect(app_pet2.pet_name).to eq(dog2.name)
   end
 
-  it 'order_by_recently_created' do
+  it 'order_by_recently_created - orders application_pets by created at date, recently created first' do
     shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
     shelter = Shelter.create!(foster_program: TRUE, name: "Karen's Shelter", city: "Madison Heights", rank: 80)
     dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")

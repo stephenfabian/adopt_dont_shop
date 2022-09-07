@@ -1,14 +1,5 @@
 require 'rails_helper'
 
-
-# As a visitor
-# When I visit an admin application show page ('/admin/applications/:id')
-# For every pet that the application is for, I see a button to approve the application for that specific pet
-# When I click that button
-# Then I'm taken back to the admin application show page
-# And next to the pet that I approved, I do not see a button to approve this pet
-# And instead I see an indicator next to the pet that they have been approved
-
 RSpec.describe 'Admin Shelters Show Page' do
   describe 'Approving a Pet for Adoption' do
     it 'When I visit /admin/applications/:id, for every pet app is for, theres button to approve app for that pet,
@@ -34,9 +25,7 @@ RSpec.describe 'Admin Shelters Show Page' do
       expect(page).to have_content("Roger")
       expect(page).to_not have_content("Pete")
       expect(page).to have_button("Approve Application for Abby")
-      # expect(page).to have_button("Reject Application for Abby")
-      # expect(page).to have_button("Approve Application for Roger")
-      # expect(page).to have_button("Reject Application for Roger")
+      expect(page).to have_button("Approve Application for Roger")
 
       click_button("Approve Application for Abby")
 
@@ -44,7 +33,7 @@ RSpec.describe 'Admin Shelters Show Page' do
       expect(page).to have_content("Abby")
       expect(page).to_not have_button("Approve Application for Abby")
 
-      expect(page).to have_content("Approved")
+      expect(page).to have_content("Status of Pet: Approved")
       expect(page).to have_content(pet_app.status)
     end
   end
@@ -58,8 +47,8 @@ RSpec.describe 'Admin Shelters Show Page' do
   # And next to the pet that I rejected, I do not see a button to approve or reject this pet
   # And instead I see an indicator next to the pet that they have been rejected
 
-  describe 'Rejecting a pet for adoption' do
-    it 'Rejecting a Pet for Adoption As a visitor' do
+
+    it 'Rejecting a Pet for Adoption' do
 
       shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
       shelter = Shelter.create!(foster_program: TRUE, name: "Karen's Shelter", city: "Madison Heights", rank: 80)
@@ -85,7 +74,6 @@ RSpec.describe 'Admin Shelters Show Page' do
       expect(page).to_not have_button("Reject Application")
       expect(page).to have_content("Rejected")
     end
-  end
 
   describe 'Approved/Rejected Pets on one Application do not affect other Applications' do
     describe 'When there are two applications in the system for the same pet' do

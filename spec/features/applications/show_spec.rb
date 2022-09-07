@@ -44,9 +44,10 @@ RSpec.describe 'Application Show Feature' do
       stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I'm awesome", status: "In Progress")
 
       visit("/applications/#{stephen.id}")
+
       within("#application_#{stephen.id}") do
-        expect(page).to have_content("Search for a Pet to add to this Application")
-        expect(page).to have_button("Submit")
+      expect(page).to have_content("Search for a Pet to add to this Application")
+      expect(page).to have_button("Submit")
       end
 
       fill_in "Search", with: "Roger"
@@ -76,27 +77,16 @@ RSpec.describe 'Application Show Feature' do
 
       expect(current_path).to eq("/applications/#{stephen.id}")
       expect(page).to have_content("Roger")
-      expect(page).to_not have_content(dog2.name)
+      expect(page).to_not have_content(dog.name)
       expect(page).to have_button("Adopt this Pet")
 
       click_button("Adopt this Pet")
 
       expect(current_path).to eq("/applications/#{stephen.id}")
       expect(page).to have_content("Roger")
-      expect(page).to_not have_content(dog2.name)
+      expect(page).to_not have_content(dog.name)
     end
-    #submit an application
-    # As a visitor
-    # When I visit an application's show page
-    # And I have added one or more pets to the application
-    # Then I see a section to submit my application
-    # And in that section I see an input to enter why I would make a good owner for these pet(s)
-    # When I fill in that input
-    # And I click a button to submit this application
-    # Then I am taken back to the application's show page
-    # And I see an indicator that the application is "Pending"
-    # And I see all the pets that I want to adopt
-    # And I do not see a section to add more pets to this application
+
     it 'can submit application with pet already in it, status changes from pending to in progress' do
       shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
       dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
@@ -134,27 +124,28 @@ RSpec.describe 'Application Show Feature' do
         expect(page).to_not have_content(dog.name)
       end
 
-    describe 'Partial Matches for Pet Names AND Case Insensitive Matches for Pet Names' do
-      it 'can find a pet with a partial AND case insensitive match from the search ' do
-        shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
-        dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
-        dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
-        dog3 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Rogerboy")
-        stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401")
+  describe 'Partial Matches for Pet Names AND Case Insensitive Matches for Pet Names' do
+    it 'can find a pet with a partial AND case insensitive match from the search ' do
+      shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
+      dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
+      dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
+      dog3 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Rogerboy")
+      stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401")
 
-        visit "/applications/#{stephen.id}"
+      visit "/applications/#{stephen.id}"
 
-        fill_in "Search", with: "rog"
-        click_on("Submit")
+      fill_in "Search", with: "rog"
+      click_on("Submit")
 
-        expect(page).to have_content("Roger")
-        expect(page).to have_content("Rogerboy")
-        expect(page).to_not have_content(dog3.name)
+      expect(page).to have_content("Roger")
+      expect(page).to have_content("Rogerboy")
+      expect(page).to_not have_content("Abby")
 
-        expect(page).to_not have_content("Abby")
-
-        fill_in "Search", with: "ab"
-        expect(page).to_not have_content("Abby")
-      end
+      fill_in "Search", with: "ab"
+      click_on("Submit")
+      expect(page).to have_content("Abby")
+      expect(page).to_not have_content("Roger")
+      expect(page).to_not have_content("Rogerboy")
     end
+  end
 end
