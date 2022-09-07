@@ -21,9 +21,8 @@ class ApplicationController < ActionController::Base
       @application.update(description: params[:description])
       @application.update(status: 'Pending')
     end
-
       redirect_to "/applications/#{@application.id}"
- end
+  end
 
   def create
     @application = Application.new(app_params)
@@ -41,7 +40,6 @@ class ApplicationController < ActionController::Base
   end
 
   private
-
   def app_params
     params.permit(:name, :street_address, :city, :state, :zip_code)
   end
