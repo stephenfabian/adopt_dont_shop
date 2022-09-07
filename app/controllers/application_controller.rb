@@ -8,7 +8,6 @@ class ApplicationController < ActionController::Base
   def show
     @application = Application.find(params[:id])
     if params[:search].present?
-      # @pet_name_search_results = Pet.find_by(name: params[:search])
       @pet_name_search_results = Pet.search(params[:search])
     end
   end
@@ -16,9 +15,7 @@ class ApplicationController < ActionController::Base
   def update
       @application = Application.find(params[:id])
     if params[:search]
-      # @pet_names = Pet.find_by(name: params[:search])
       @pet_names = Pet.search(params[:search])
-      # @application_pet = ApplicationPet.create!(pet: @pet_names,  application: @application)
       @application.pets << @pet_names
     elsif params[:description]
       @application.update(description: params[:description])
@@ -31,7 +28,6 @@ class ApplicationController < ActionController::Base
   def create
     @application = Application.new(app_params)
       if @application.save
-      # if @application.valid?
         redirect_to "/applications/#{@application.id}"
       else
         redirect_to "/applications/new"
@@ -41,17 +37,9 @@ class ApplicationController < ActionController::Base
 
   def admin_show
     @application = Application.find(params[:id])
+    @application_pets = @application.application_pets.order_by_recently_created
   end
 
-  def admin_update
-    @application = Application.find(params[:id])
-    if params[:pet_id] == "Approved"
-      @application.update(status: 'Approved')
-    elsif params[:pet_id] == "Rejected"
-        @application.update(status: 'Rejected')
-    end
-    redirect_to "/admin/applications/#{@application.id}"
-  end
   private
 
   def app_params

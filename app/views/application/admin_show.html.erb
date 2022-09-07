@@ -1,13 +1,23 @@
 
-<% @application.pets.each do |pet| %>
- <p><%= pet.name %></p>
-  <% if @application.status == "Pending" %>
-    <%= button_to "Approve Application", "/admin/applications/#{@application.id}", method: :patch, params: {pet_id: "Approved"}  %>
-    <%= button_to "Reject Application", "/admin/applications/#{@application.id}", method: :patch, params: {pet_id: "Rejected"}  %>
-    <% elsif @application.status == "Approved"  %>
-    Application Status: <%= @application.status %>
-    <% elsif @application.status == "Rejected" %>
-    Application Status: <%= @application.status %>
+<% @application_pets.each do |pet| %>
 
+  <p><%= pet.pet_name %></p>
+  <p>Status of Pet: <%= pet.status %></p>
+
+    <% if pet.status == "In Progress"  %>
+      <%= form_with url: "/applicationpets", method: :patch, local: true do |form| %>
+        <%= form.hidden_field :pet_id, value: "#{pet.pet_id}" %>
+        <%= form.hidden_field :app_pet_status, value: "Approved"%>
+        <%= form.hidden_field :application_id, value: @application.id %>
+        <%= form.submit "Approve Application for #{pet.pet_name}" %>
+      <% end %>
+          
+      <%= form_with url: "/applicationpets", method: :patch, local: true do |form| %>
+        <%= form.hidden_field :pet_id, value: "#{pet.pet_id}" %>
+        <%= form.hidden_field :app_pet_status, value: "Rejected" %>
+        <%= form.hidden_field :application_id, value: @application.id %>
+        <%= form.submit "Reject Application for #{pet.pet_name}" %>
+      <% end %>
   <% end %>
+          
 <% end %>
