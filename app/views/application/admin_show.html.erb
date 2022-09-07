@@ -11,7 +11,7 @@
         <%= form.hidden_field :application_id, value: @application.id %>
         <%= form.submit "Approve Application for #{pet.pet_name}" %>
       <% end %>
-          
+
       <%= form_with url: "/applicationpets", method: :patch, local: true do |form| %>
         <%= form.hidden_field :pet_id, value: "#{pet.pet_id}" %>
         <%= form.hidden_field :app_pet_status, value: "Rejected" %>
@@ -19,5 +19,5 @@
         <%= form.submit "Reject Application for #{pet.pet_name}" %>
       <% end %>
   <% end %>
-          
+
 <% end %>

@@ -18,18 +18,23 @@ RSpec.describe 'Application Show Feature' do
 
       visit("/applications/#{stephen.id}")
 
-      expect(page).to have_content("Stephen Fabian")
-      expect(page).to_not have_content("Tommy")
-      expect(page).to have_content(stephen.street_address)
-      expect(page).to have_content(stephen.city)
-      expect(page).to have_content(stephen.state)
-      expect(page).to have_content(stephen.zip_code)
-      expect(page).to have_content(stephen.description)
-      expect(page).to have_link("Abby")
-      expect(page).to have_content(stephen.status)
+      within("#application_start_#{stephen.id}") do
+        save_and_open_page
+        expect(page).to have_content("Stephen Fabian")
+        expect(page).to_not have_content(tommy.name)
+        expect(page).to have_content(stephen.street_address)
+        expect(page).to have_content(stephen.city)
+        expect(page).to have_content(stephen.state)
+        expect(page).to have_content(stephen.zip_code)
+        expect(page).to have_content(stephen.description)
+        expect(page).to have_link("Abby")
+        expect(page).to_not have_link("Dinosaur")
+        expect(page).to have_content(stephen.status)
+      end
 
       click_link("Abby")
       expect(current_path).to eq("/pets/#{dog.id}")
+
     end
   end
 
@@ -48,8 +53,10 @@ RSpec.describe 'Application Show Feature' do
       fill_in "Search", with: "Roger"
       click_on("Submit")
 
+
       expect(current_path).to eq("/applications/#{stephen.id}")
-      expect(page).to have_content("Roger")
+      expect(page).to have_content(dog2.name)
+      expect(page).to_not have_content(dog.name)
   end
 
 
