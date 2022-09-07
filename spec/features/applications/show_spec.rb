@@ -19,7 +19,6 @@ RSpec.describe 'Application Show Feature' do
       visit("/applications/#{stephen.id}")
 
       within("#application_start_#{stephen.id}") do
-        save_and_open_page
         expect(page).to have_content("Stephen Fabian")
         expect(page).to_not have_content(tommy.name)
         expect(page).to have_content(stephen.street_address)
@@ -53,14 +52,10 @@ RSpec.describe 'Application Show Feature' do
       fill_in "Search", with: "Roger"
       click_on("Submit")
 
-
       expect(current_path).to eq("/applications/#{stephen.id}")
       expect(page).to have_content(dog2.name)
       expect(page).to_not have_content(dog.name)
   end
-
-
-
 # As a visitor
 # When I visit an application's show page
 # And I search for a Pet by name
@@ -69,13 +64,11 @@ RSpec.describe 'Application Show Feature' do
 # When I click one of these buttons
 # Then I am taken back to the application show page
 # And I see the Pet I want to adopt listed on this application
-
     it 'Add a Pet to an Application' do
       shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
       dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
       dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
       stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I'm awesome", status: "In Progress")
-
 
       visit("/applications/#{stephen.id}")
       fill_in "Search", with: "Roger"
@@ -83,13 +76,15 @@ RSpec.describe 'Application Show Feature' do
 
       expect(current_path).to eq("/applications/#{stephen.id}")
       expect(page).to have_content("Roger")
+      expect(page).to_not have_content(dog2.name)
       expect(page).to have_button("Adopt this Pet")
+
       click_button("Adopt this Pet")
 
       expect(current_path).to eq("/applications/#{stephen.id}")
       expect(page).to have_content("Roger")
+      expect(page).to_not have_content(dog2.name)
     end
-
     #submit an application
     # As a visitor
     # When I visit an application's show page
@@ -102,7 +97,6 @@ RSpec.describe 'Application Show Feature' do
     # And I see an indicator that the application is "Pending"
     # And I see all the pets that I want to adopt
     # And I do not see a section to add more pets to this application
-
     it 'can submit application with pet already in it, status changes from pending to in progress' do
       shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
       dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
@@ -123,12 +117,10 @@ RSpec.describe 'Application Show Feature' do
       expect(page).to have_content("Pending")
       expect(page).to_not have_content("Search")
     end
-
       # As a visitor
       # When I visit an application's show page
       # And I have not added any pets to the application
       # Then I do not see a section to submit my application
-
       it 'cant submit an application without pet' do
         shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
         dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
@@ -139,12 +131,13 @@ RSpec.describe 'Application Show Feature' do
 
         expect(page).to_not have_content("Submit application")
         expect(stephen.pets).to eq([])
+        expect(page).to_not have_content(dog.name)
       end
 
     describe 'Partial Matches for Pet Names AND Case Insensitive Matches for Pet Names' do
       it 'can find a pet with a partial AND case insensitive match from the search ' do
         shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
-        dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
+        dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Roblox")
         dog2 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Roger")
         dog3 = shelter.pets.create!(adoptable: TRUE, age: 100, breed: "Huge-dog", name: "Rogerboy")
         stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401")
@@ -156,6 +149,7 @@ RSpec.describe 'Application Show Feature' do
 
         expect(page).to have_content("Roger")
         expect(page).to have_content("Rogerboy")
+        expect(page).to_not have_content(dog3.name)
       end
     end
 end

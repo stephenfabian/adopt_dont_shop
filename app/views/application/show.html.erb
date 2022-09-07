@@ -8,10 +8,9 @@
   <p>Description: <%= @application.description %></p>
   <p>Pets: <% @application.pets.each do |app_pet| %>
   <p><%= link_to "#{app_pet.name}", "/pets/#{app_pet.id}", method: :get %></p>
-<%end%>
+  <%end%>
 <p>Status: <%= @application.status %></p>
 </div>
-
 
 <div id= "application_<%= @application.id %>">
   <% if @application.status == 'In Progress' %>
