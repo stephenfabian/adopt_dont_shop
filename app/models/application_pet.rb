@@ -6,5 +6,8 @@ class ApplicationPet < ApplicationRecord
   def pet_name
     pet.name
   end
-  
+
+  def self.order_by_recently_created
+    order(created_at: :desc)
+  end
 end
