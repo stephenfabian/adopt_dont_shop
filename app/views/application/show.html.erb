@@ -6,32 +6,33 @@
 <p>State: <%= @application.state %></p>
 <p>Zip: <%= @application.zip_code %></p>
 <p>Description: <%= @application.description %></p>
-<p>Pets: <% @application.pets.each do |app_pet| %>
-  <%= app_pet.name %>
+<p>Pets: <% @application.pets.each do |app_pet| %> 
+  <p><%= link_to "#{app_pet.name}", "/pets/#{app_pet.id}", method: :get %></p>
 <%end%>
 
 <p>Status: <%= @application.status %></p>
 
+<div id= "application_<%= @application.id %>">
   <% if @application.status == 'In Progress' %>
-    <h3> Search for a Pet to add to this Application </h3>
-    <%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
-    <%= form.label :search %>
-    <%= form.text_field :search, params: :search %>
-    <%= form.submit 'Submit' %>
-      <% end  %>
-    <% end %>
+      <h3> Search for a Pet to add to this Application </h3>
+      <%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
+        <%= form.label :search %>
+        <%= form.text_field :search, params: :search %>
+        <%= form.submit 'Submit' %>
+      <% end %>
+  <% end %>
+</div>
 
-<% if @pet_name_search_results.present? %>
-    <% @pet_name_search_results.each do |pet| %>
-      <p><%=pet.name%> <%= button_to "Adopt this Pet", "/applications/#{@application.id}", method: :patch, params: {search: pet.name} %></p>
-    <%end%>
+  <% if @pet_name_search_results.present? %>
+      <% @pet_name_search_results.each do |pet| %>
+        <p><%=pet.name%> <%= button_to "Adopt this Pet", "/applications/#{@application.id}", method: :patch, params: {search: pet.name} %></p>
+      <%end%>
    <%end%>
    
-
-   <% if @application.pets.present? %>
-   <p><%= form_with url: "/applications/#{@application.id}", method: :patch, local: true do |form| %></p>
-     Why am I a good fit? <%= form.label :description %>
-     <%= form.text_field :description %>
-     <%= form.submit 'Submit application' %>
-     <% end %>
-     <% end %>
+  <% if @application.pets.present? %>
+      <p><%= form_with url: "/applications/#{@application.id}", method: :patch, local: true do |form| %></p>
+        Why am I a good fit? <%= form.label :description %>
+        <%= form.text_field :description %>
+        <%= form.submit 'Submit application' %>
+      <% end %>
+  <% end %>

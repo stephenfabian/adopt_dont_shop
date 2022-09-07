@@ -7,20 +7,29 @@ RSpec.describe 'Application Show Feature' do
 
       shelter = Shelter.create!(foster_program: TRUE, name: "Stephen's Shelter", city: "Royal Oak", rank: 1)
       dog = shelter.pets.create!(adoptable: TRUE, age: 5, breed: "Shitzu", name: "Abby")
-      stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I like cat toes", status: "In Progress")
+      dog2 = shelter.pets.create!(adoptable: TRUE, age: 8, breed: "Dinosaur", name: "Dino")
+      dog3 = shelter.pets.create!(adoptable: TRUE, age: 4, breed: "Bernese", name: "Cooper")
+      stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I like dogs", status: "In Progress")
+      tommy = Application.create!(name: "Tommy", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I like dogs", status: "In Progress")
 
       ApplicationPet.create!(pet: dog, application: stephen)
+      ApplicationPet.create!(pet: dog2, application: stephen)
+      ApplicationPet.create!(pet: dog3, application: tommy)
 
       visit("/applications/#{stephen.id}")
 
-      expect(page).to have_content(stephen.name)
+      expect(page).to have_content("Stephen Fabian")
+      expect(page).to_not have_content("Tommy")
       expect(page).to have_content(stephen.street_address)
       expect(page).to have_content(stephen.city)
       expect(page).to have_content(stephen.state)
       expect(page).to have_content(stephen.zip_code)
       expect(page).to have_content(stephen.description)
-      expect(page).to have_content("Abby")
+      expect(page).to have_link("Abby")
       expect(page).to have_content(stephen.status)
+
+      click_link("Abby")
+      expect(current_path).to eq("/pets/#{dog.id}")
     end
   end
 
@@ -31,7 +40,10 @@ RSpec.describe 'Application Show Feature' do
       stephen = Application.create!(name: "Stephen Fabian", street_address: "2303 Braun Ct", city: "Golden", state: "CO", zip_code: "80401", description: "I'm awesome", status: "In Progress")
 
       visit("/applications/#{stephen.id}")
-      expect(page).to have_content("Search for a Pet to add to this Application")
+      within("#application_#{stephen.id}") do
+        expect(page).to have_content("Search for a Pet to add to this Application")
+        expect(page).to have_button("Submit")
+      end
 
       fill_in "Search", with: "Roger"
       click_on("Submit")
